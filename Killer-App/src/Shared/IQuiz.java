@@ -10,6 +10,7 @@ import java.util.ArrayList;
  */
 public interface IQuiz
 {
+    public String getQuizCode();
     public ArrayList<Player> getPlayers();
     public Player getPlayer(String name);
     public ArrayList<Question> getQuestions();

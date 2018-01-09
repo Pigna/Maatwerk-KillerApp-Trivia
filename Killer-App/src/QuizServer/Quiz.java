@@ -11,14 +11,22 @@ import java.util.ArrayList;
  */
 public class Quiz extends UnicastRemoteObject implements IQuiz
 {
+    String quizCode;
     ArrayList<Player> players;
     ArrayList<Question> questions;
-    protected Quiz() throws RemoteException
+
+    protected Quiz(String quizCode) throws RemoteException
     {
+        this.quizCode = quizCode;
         players = new ArrayList<>();
         questions = new ArrayList<>();
     }
 
+    @Override
+    public String getQuizCode()
+    {
+        return quizCode;
+    }
     @Override
     public ArrayList<Player> getPlayers()
     {
