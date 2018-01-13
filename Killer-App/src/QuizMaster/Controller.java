@@ -141,7 +141,7 @@ public class Controller extends Main implements Initializable
         {
             try
             {
-                IQuestion q = new Question(quiz.GetQuestionId(), question, answerA, answerB, answerC, answerD);
+                IQuestion q = new Question(question, answerA, answerB, answerC, answerD);
                 quiz.addQuestion(q);
                 quizManager.NewQuestion(quiz.getQuizCode(), q);
                 ClearTextAreas();

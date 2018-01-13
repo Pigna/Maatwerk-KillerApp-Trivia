@@ -1,5 +1,6 @@
 package QuizServer;
 
+import Shared.IPlayer;
 import Shared.IQuestion;
 import Shared.IQuiz;
 import Shared.IQuizManager;
@@ -86,12 +87,14 @@ public class QuizManager extends UnicastRemoteObject implements IQuizManager
         return null;
     }
 
-    public void NewPlayer(String quizCode, String playerName)
+    @Override
+    public void PlayerAnswerQuestion(String quizCode, IQuestion question, IPlayer player, Integer answerID) throws RemoteException
     {
-
+        // TODO: finish this off, then done!
+        // TODO: Afterwards maybe score screen?
     }
 
-    public void PlayerAnswerQuestion(Question question, Player player, String answerID)
+    public void NewPlayer(String quizCode, String playerName)
     {
 
     }

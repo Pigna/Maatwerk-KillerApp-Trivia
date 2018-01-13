@@ -1,9 +1,10 @@
 package QuizClient;
 
+import QuizServer.Player;
+import Shared.IPlayer;
 import Shared.IQuestion;
 import Shared.IQuiz;
 import Shared.IQuizManager;
-import fontyspublisher.IRemotePropertyListener;
 import fontyspublisher.IRemotePublisherForListener;
 import javafx.application.Platform;
 import javafx.event.Event;
@@ -11,8 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
-import java.beans.PropertyChangeEvent;
-import java.io.Serializable;
 import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -23,7 +22,7 @@ import java.util.ResourceBundle;
 /**
  * Created by myron on 22-11-17.
  */
-public class Controller extends Main implements Initializable, Serializable
+public class Controller extends Main implements Initializable
 {
     //RMI stuff
     private static final String bindingName = "serverInform";
@@ -36,8 +35,12 @@ public class Controller extends Main implements Initializable, Serializable
     IQuizManager quizManager = null;
     IQuiz quiz = null;
     IQuestion currentQuestion = null;
+    int counter = 0;
+    IPlayer player = null;
     ProperyListener listener = null;
 
+    @FXML
+    transient TextField tfUsername;
     @FXML
     transient TextField tfQuizCode;
     @FXML
@@ -122,8 +125,9 @@ public class Controller extends Main implements Initializable, Serializable
 
     public void JoinQuiz(Event event)
     {
+        String inputUsername = tfUsername.getText().trim();
         String inputQuizCode = tfQuizCode.getText().trim();
-        if (!inputQuizCode.equals(""))
+        if (!inputQuizCode.equals("") && !inputUsername.equals(""))
         {
             try
             {
@@ -145,6 +149,7 @@ public class Controller extends Main implements Initializable, Serializable
 
                 SetQuestion();
             }
+            player = new Player(inputUsername);
         }
     }
 
@@ -165,7 +170,7 @@ public class Controller extends Main implements Initializable, Serializable
 
     void SetQuestion()
     {
-        currentQuestion = quiz.getQuestion(currentQuestion);
+        currentQuestion = getQuestion();
         if (currentQuestion != null)
         {
             EnableQuestion();
@@ -183,6 +188,18 @@ public class Controller extends Main implements Initializable, Serializable
             ClearQuestion();
         }
     }
+
+    private IQuestion getQuestion()
+    {
+        if(quiz.getQuestions().listIterator(counter).hasNext())
+        {
+            IQuestion q = quiz.getQuestions().listIterator(counter).next();
+            counter++;
+            return q;
+        }
+        return null;
+    }
+
     private void ClearQuestion()
     {
         lbQuestion.setText("");
@@ -196,6 +213,7 @@ public class Controller extends Main implements Initializable, Serializable
         btnAnswerQuestionC.setDisable(true);
         btnAnswerQuestionD.setDisable(true);
     }
+
     private void EnableQuestion()
     {
         btnAnswerQuestionA.setDisable(false);
@@ -203,16 +221,46 @@ public class Controller extends Main implements Initializable, Serializable
         btnAnswerQuestionC.setDisable(false);
         btnAnswerQuestionD.setDisable(false);
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
 
     }
+
     @FXML
     public void AnswerQuestion(Event event)
     {
-        System.out.println(((Control)event.getSource()).getId());
-        // TODO: handle button click events;
-        // TODO: Create player object and send to quiz
+        String id = ((Control) event.getSource()).getId();
+        int answerid = 0;
+        switch (id)
+        {
+            case "btnAnswerQuestionA":
+            {
+                answerid = 1;
+            }
+            case "btnAnswerQuestionB":
+            {
+                answerid = 2;
+            }
+            case "btnAnswerQuestionC":
+            {
+                answerid = 3;
+            }
+            case "btnAnswerQuestionD":
+            {
+                answerid = 4;
+            }
+        }
+        try
+        {
+            quizManager.PlayerAnswerQuestion(quiz.getQuizCode(), currentQuestion, player, answerid);
+            SetQuestion();
+            System.out.println("Question answered.");
+        }
+        catch (RemoteException e)
+        {
+            System.out.println("Client: Remote exception answering the question.");
+        }
     }
 }

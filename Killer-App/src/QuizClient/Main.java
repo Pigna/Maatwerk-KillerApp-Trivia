@@ -1,6 +1,5 @@
 package QuizClient;
 
-import Shared.IQuestion;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

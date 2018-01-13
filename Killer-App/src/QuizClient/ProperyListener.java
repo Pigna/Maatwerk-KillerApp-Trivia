@@ -4,7 +4,6 @@ import Shared.IQuestion;
 import fontyspublisher.IRemotePropertyListener;
 
 import java.beans.PropertyChangeEvent;
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -14,15 +13,17 @@ import java.rmi.server.UnicastRemoteObject;
 public class ProperyListener extends UnicastRemoteObject implements IRemotePropertyListener
 {
     Controller controller;
+
     ProperyListener(Controller controller) throws RemoteException
     {
         this.controller = controller;
     }
+
     @Override
     public void propertyChange(PropertyChangeEvent pce) throws RemoteException
     {
         controller.quiz.addQuestion((IQuestion) pce.getNewValue());
-        if(controller.currentQuestion == null)
+        if (controller.currentQuestion == null)
         {
             controller.SetQuestion();
         }

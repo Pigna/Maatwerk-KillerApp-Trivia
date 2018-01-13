@@ -1,7 +1,5 @@
 package Shared;
 
-import QuizServer.Question;
-
 import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -18,5 +16,5 @@ public interface IQuizManager extends Remote, Serializable
     IQuiz GetQuiz(String quizCode) throws RemoteException;
 //    void NewPlayer(String quizCode, String playerName) throws RemoteException;
 
-    //void PlayerAnswerQuestion(Question question, Player player, Integer answerID) throws RemoteException;
+    void PlayerAnswerQuestion(String quizCode, IQuestion question, IPlayer player, Integer answerID) throws RemoteException;
 }

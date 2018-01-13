@@ -12,8 +12,9 @@
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
-                                <Button layoutX="313.0" layoutY="240.0" mnemonicParsing="false" onAction="#JoinQuiz" prefHeight="25.0" prefWidth="149.0" text="Join Quiz" />
+                                <Button layoutX="311.0" layoutY="242.0" mnemonicParsing="false" onAction="#JoinQuiz" prefHeight="25.0" prefWidth="149.0" text="Join Quiz" />
                                 <TextField fx:id="tfQuizCode" layoutX="311.0" layoutY="207.0" promptText="QuizCode" />
+                        <TextField fx:id="tfUsername" layoutX="311.0" layoutY="171.0" promptText="Username" />
                             </children>
                         </AnchorPane>
                     </content>
