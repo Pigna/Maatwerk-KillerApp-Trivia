@@ -7,12 +7,18 @@ import Shared.IQuestion;
  */
 public class Question implements IQuestion
 {
+    int id;
     String question;
     String answerA;
     String answerB;
     String answerC;
     String answerD;
 
+    @Override
+    public int getQuestionId()
+    {
+        return id;
+    }
     @Override
     public String getQuestion()
     {
@@ -39,8 +45,9 @@ public class Question implements IQuestion
         return answerD;
     }
 
-    public Question(String question, String answerA, String answerB, String answerC, String answerD)
+    public Question(int id, String question, String answerA, String answerB, String answerC, String answerD)
     {
+        this.id = id;
         this.question = question;
         this.answerA = answerA;
         this.answerB = answerB;

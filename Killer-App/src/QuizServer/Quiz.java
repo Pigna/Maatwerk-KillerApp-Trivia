@@ -13,7 +13,6 @@ public class Quiz implements IQuiz
     String quizCode;
     //ArrayList<Player> players;
     ArrayList<IQuestion> questions;
-    int currentQuestionNr = 0;
 
     protected Quiz(String quizCode)
     {
@@ -53,12 +52,15 @@ public class Quiz implements IQuiz
     }
 
     @Override
-    public IQuestion getQuestion()
+    public IQuestion getQuestion(IQuestion previousQuestion)
     {
-        currentQuestionNr++;
-        if ((questions.size() > 0) && (currentQuestionNr <= questions.size()-1))
+        if (previousQuestion != null)
         {
-            return questions.get(currentQuestionNr-1);
+            return questions.get(previousQuestion.getQuestionId());
+        }
+        else if (questions.size() > 0)
+        {
+            return questions.get(0);
         }
         return null;
     }
@@ -67,5 +69,11 @@ public class Quiz implements IQuiz
     public void addQuestion(IQuestion question)
     {
         questions.add(question);
+    }
+
+    @Override
+    public int GetQuestionId()
+    {
+        return questions.size();
     }
 }

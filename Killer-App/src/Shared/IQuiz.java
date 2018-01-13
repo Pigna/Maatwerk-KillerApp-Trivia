@@ -1,5 +1,7 @@
 package Shared;
 
+import QuizServer.Question;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -12,6 +14,7 @@ public interface IQuiz extends Serializable
 //    ArrayList<Player> getPlayers();
 //    Player getPlayer(String name);
     ArrayList<IQuestion> getQuestions();
-    IQuestion getQuestion();
+    IQuestion getQuestion(IQuestion previousQuestion);
     void addQuestion(IQuestion question);
+    int GetQuestionId();
 }

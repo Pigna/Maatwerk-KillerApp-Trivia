@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public interface IQuestion extends Serializable
 {
+    int getQuestionId();
     String getQuestion();
     String getAnswerA();
     String getAnswerB();

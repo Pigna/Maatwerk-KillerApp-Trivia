@@ -5,6 +5,7 @@ import Shared.IQuiz;
 import Shared.IQuizManager;
 import fontyspublisher.IRemotePropertyListener;
 import fontyspublisher.IRemotePublisherForListener;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,7 +23,7 @@ import java.util.ResourceBundle;
 /**
  * Created by myron on 22-11-17.
  */
-public class Controller extends Main implements IRemotePropertyListener, Initializable, Serializable
+public class Controller extends Main implements Initializable, Serializable
 {
     //RMI stuff
     private static final String bindingName = "serverInform";
@@ -35,6 +36,7 @@ public class Controller extends Main implements IRemotePropertyListener, Initial
     IQuizManager quizManager = null;
     IQuiz quiz = null;
     IQuestion currentQuestion = null;
+    ProperyListener listener = null;
 
     @FXML
     transient TextField tfQuizCode;
@@ -60,15 +62,13 @@ public class Controller extends Main implements IRemotePropertyListener, Initial
     public Controller()
     {
         ConnectToServer("10.0.0.9", 1098);
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent pce) throws RemoteException
-    {
-        addQuestion((IQuestion) pce.getNewValue());
-        if(currentQuestion == null)
+        try
         {
-            SetQuestion();
+            listener = new ProperyListener(this);
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Error: Creating listener");
         }
     }
 
@@ -153,7 +153,7 @@ public class Controller extends Main implements IRemotePropertyListener, Initial
         try
         {
             System.out.println("Client trying to subscribe");
-            remotePublisherForListener.subscribeRemoteListener(this, QuizCode);
+            remotePublisherForListener.subscribeRemoteListener(listener, QuizCode);
             System.out.println("Client subscribed!");
         }
         catch (RemoteException ex)
@@ -163,17 +163,20 @@ public class Controller extends Main implements IRemotePropertyListener, Initial
         }
     }
 
-    private void SetQuestion()
+    void SetQuestion()
     {
-        currentQuestion = quiz.getQuestion();
+        currentQuestion = quiz.getQuestion(currentQuestion);
         if (currentQuestion != null)
         {
             EnableQuestion();
-            lbQuestion.setText(currentQuestion.getQuestion());
-            btnAnswerQuestionA.setText(currentQuestion.getAnswerA());
-            btnAnswerQuestionB.setText(currentQuestion.getAnswerB());
-            btnAnswerQuestionC.setText(currentQuestion.getAnswerC());
-            btnAnswerQuestionD.setText(currentQuestion.getAnswerD());
+            Platform.runLater(() ->
+            {
+                lbQuestion.setText(currentQuestion.getQuestion());
+                btnAnswerQuestionA.setText(currentQuestion.getAnswerA());
+                btnAnswerQuestionB.setText(currentQuestion.getAnswerB());
+                btnAnswerQuestionC.setText(currentQuestion.getAnswerC());
+                btnAnswerQuestionD.setText(currentQuestion.getAnswerD());
+            });
         }
         else
         {

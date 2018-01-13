@@ -21,9 +21,4 @@ public class Main extends Application
     public static void main(String[] args) {
         launch(args);
     }
-
-    public void addQuestion(IQuestion question)
-    {
-        //TODO: Set the question in the GUI
-    }
 }
