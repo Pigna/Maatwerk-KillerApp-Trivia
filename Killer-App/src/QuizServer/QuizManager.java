@@ -4,7 +4,6 @@ import Shared.IQuestion;
 import Shared.IQuiz;
 import Shared.IQuizManager;
 import fontyspublisher.IRemotePublisherForDomain;
-import fontyspublisher.RemotePublisher;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -25,30 +24,74 @@ public class QuizManager extends UnicastRemoteObject implements IQuizManager
         this.remotePublisherForDomain = remotePublisherForDomain;
         //NewQuiz();
     }
-    public Quiz NewQuiz()
+
+    @Override
+    public IQuiz NewQuiz()
     {
         //TODO: Generate UUID
         String code = "quiz";
         try
         {
-            Quiz newQuiz = new Quiz(code);
+            IQuiz newQuiz = new Quiz(code);
             remotePublisherForDomain.registerProperty(code);
+            System.out.println("Quiz created: " + code);
+            quizzes.add(newQuiz);
+            return newQuiz;
         }
         catch (RemoteException e)
         {
-            e.printStackTrace();
+            System.out.println("Server: Register Property Error");
         }
         return null;
     }
+
+    @Override
     public void NewQuestion(String quizCode, IQuestion question)
     {
         //inform player
+        IQuiz quiz = null;
+        try
+        {
+            quiz = GetQuiz(quizCode);
+        }
+        catch (RemoteException e)
+        {
+            System.out.println("Server: Error getting Quiz by code");
+        }
+        if (quiz != null)
+        {
+            quiz.addQuestion(question);
+            try
+            {
+                // Inform player with the new question
+                remotePublisherForDomain.inform(quiz.getQuizCode(), question, question);
+            }
+            catch (RemoteException e)
+            {
+                System.out.println("Server: Error informing players");
+            }
+        }
     }
+
+    @Override
+    public IQuiz GetQuiz(String quizCode) throws RemoteException
+    {
+        for (IQuiz q : quizzes)
+        {
+            if (q.getQuizCode().equals(quizCode))
+            {
+                return q;
+            }
+        }
+        return null;
+    }
+
     public void NewPlayer(String quizCode, String playerName)
     {
 
     }
-    public void PlayerAnswerQuestion(Question question, Player player, Integer answerID)
+
+    public void PlayerAnswerQuestion(Question question, Player player, String answerID)
     {
 
     }

@@ -7,24 +7,13 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    Controller controller;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("QuizMaster.fxml"));
         primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
-
-        try
-        {
-            controller = new Controller(this);
-        }
-        catch (Exception ex)
-        {
-            System.out.println("Master: Cannot create MasterController");
-            System.out.println("Master: RemoteException: " + ex.getMessage());
-        }
     }
 
 

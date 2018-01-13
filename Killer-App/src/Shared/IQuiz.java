@@ -1,18 +1,17 @@
 package Shared;
 
-import QuizServer.Player;
-import QuizServer.Question;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by myron on 11-12-17.
  */
-public interface IQuiz
+public interface IQuiz extends Serializable
 {
-    public String getQuizCode();
-    public ArrayList<Player> getPlayers();
-    public Player getPlayer(String name);
-    public ArrayList<Question> getQuestions();
-    public Question getQuestion();
+    String getQuizCode();
+//    ArrayList<Player> getPlayers();
+//    Player getPlayer(String name);
+    ArrayList<IQuestion> getQuestions();
+    IQuestion getQuestion();
+    void addQuestion(IQuestion question);
 }

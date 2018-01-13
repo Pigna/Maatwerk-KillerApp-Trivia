@@ -1,16 +1,46 @@
 package QuizMaster;
 
+import QuizServer.Question;
+import Shared.IQuestion;
 import Shared.IQuiz;
 import Shared.IQuizManager;
+import javafx.event.Event;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 
+import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ResourceBundle;
 
-public class Controller {
+public class Controller extends Main implements Initializable
+{
 
-    Main masterMain;
+    @FXML
+    Button btnCreateNewQuestion;
+
+    @FXML
+    TextArea taQuestion;
+
+    @FXML
+    TextArea taAnswerQuestionA;
+
+    @FXML
+    TextArea taAnswerQuestionB;
+
+    @FXML
+    TextArea taAnswerQuestionC;
+
+    @FXML
+    TextArea taAnswerQuestionD;
+
+    @FXML
+    Label lblRoomCode;
     //RMI stuff
     private static final String bindingNameQM = "gameManager";
     private Registry registry = null;
@@ -18,10 +48,23 @@ public class Controller {
     IQuizManager quizManager;
     IQuiz quiz;
 
-    public Controller(Main masterMain)
+    public Controller()
     {
-        this.masterMain = masterMain;
-        ConnectToServer("10.0.0.9",1098);
+
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources)
+    {
+        try
+        {
+            ConnectToServer("10.0.0.9",1098);
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Master: Cannot create MasterController");
+            System.out.println("Master: Exception: " + ex.getMessage());
+        }
     }
 
     private void ConnectToServer(String ip, int poort)
@@ -69,20 +112,60 @@ public class Controller {
         }
         if (quizManager != null)
         {
-            //testStudentAdministration();
-            System.out.println("QuizManager is ready!");
+            System.out.println("Master: QuizManager is ready!");
             try
             {
                 quiz = quizManager.NewQuiz();
+                SetRoomCode(quiz.getQuizCode());
             }
-            catch (RemoteException e)
+            catch (RemoteException ex)
             {
-                e.printStackTrace();
+                System.out.println("Master: Remote Exception: " + ex.getMessage());
             }
         }
         else
         {
-            System.out.println("Error: 'QuizManager' is null");
+            System.out.println("Master: Error: 'QuizManager' is null");
         }
+    }
+    @FXML
+    public void SendNewQuestion(Event event)
+    {
+        String question = taQuestion.getText();
+        String answerA = taAnswerQuestionA.getText();
+        String answerB = taAnswerQuestionB.getText();
+        String answerC = taAnswerQuestionC.getText();
+        String answerD = taAnswerQuestionD.getText();
+
+        if(!question.trim().equals("") && !answerA.trim().equals("") && !answerB.trim().equals("") && !answerC.trim().equals("") && !answerD.trim().equals(""))
+        {
+            try
+            {
+                IQuestion q = new Question(question, answerA, answerB, answerC, answerD);
+                quiz.addQuestion(q);
+                quizManager.NewQuestion(quiz.getQuizCode(), q);
+                ClearTextAreas();
+            }
+            catch (RemoteException e)
+            {
+                System.out.println("Master: Send Question Remote Exception");
+            }
+        }
+    }
+    private void ClearTextAreas()
+    {
+        taQuestion.setText("");
+        taAnswerQuestionA.setText("");
+        taAnswerQuestionB.setText("");
+        taAnswerQuestionC.setText("");
+        taAnswerQuestionD.setText("");
+    }
+    public void GetAnswers()
+    {
+
+    }
+    private void SetRoomCode(String roomCode)
+    {
+        lblRoomCode.setText(roomCode);
     }
 }
