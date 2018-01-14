@@ -31,7 +31,11 @@
                 </Tab>
                 <Tab text="Highscore">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="btnRefreshScore" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#RefreshScore" text="Refresh Score" />
+                        <TreeView fx:id="tvPlayerAnswers" layoutX="14.0" layoutY="50.0" prefHeight="413.0" prefWidth="740.0" />
+                     </children></AnchorPane>
                     </content>
                 </Tab>
             </tabs>

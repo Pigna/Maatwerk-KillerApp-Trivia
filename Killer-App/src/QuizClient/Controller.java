@@ -37,7 +37,7 @@ public class Controller extends Main implements Initializable
     IQuestion currentQuestion = null;
     int counter = 0;
     IPlayer player = null;
-    ProperyListener listener = null;
+    PropertyListener listener = null;
 
     @FXML
     transient TextField tfUsername;
@@ -67,7 +67,7 @@ public class Controller extends Main implements Initializable
         ConnectToServer("10.0.0.9", 1098);
         try
         {
-            listener = new ProperyListener(this);
+            listener = new PropertyListener(this);
         }
         catch (Exception ex)
         {

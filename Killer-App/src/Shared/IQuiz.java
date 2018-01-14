@@ -9,8 +9,12 @@ import java.util.ArrayList;
 public interface IQuiz extends Serializable
 {
     String getQuizCode();
-//    ArrayList<Player> getPlayers();
-//    Player getPlayer(String name);
+
+    ArrayList<IPlayer> getPlayers();
+
     ArrayList<IQuestion> getQuestions();
-    void addQuestion(IQuestion question);
+
+    void AddQuestion(IQuestion question);
+
+    void AddPlayerAnswer(IPlayer player, IQuestionAnswer questionAnswer);
 }

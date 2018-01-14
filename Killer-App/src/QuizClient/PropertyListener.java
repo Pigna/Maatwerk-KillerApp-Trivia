@@ -10,11 +10,11 @@ import java.rmi.server.UnicastRemoteObject;
 /**
  * Created by myron on 13-01-18.
  */
-public class ProperyListener extends UnicastRemoteObject implements IRemotePropertyListener
+public class PropertyListener extends UnicastRemoteObject implements IRemotePropertyListener
 {
     Controller controller;
 
-    ProperyListener(Controller controller) throws RemoteException
+    PropertyListener(Controller controller) throws RemoteException
     {
         this.controller = controller;
     }
@@ -22,7 +22,7 @@ public class ProperyListener extends UnicastRemoteObject implements IRemotePrope
     @Override
     public void propertyChange(PropertyChangeEvent pce) throws RemoteException
     {
-        controller.quiz.addQuestion((IQuestion) pce.getNewValue());
+        controller.quiz.AddQuestion((IQuestion) pce.getNewValue());
         if (controller.currentQuestion == null)
         {
             controller.SetQuestion();

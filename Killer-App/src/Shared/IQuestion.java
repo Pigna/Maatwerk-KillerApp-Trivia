@@ -12,4 +12,5 @@ public interface IQuestion extends Serializable
     String getAnswerB();
     String getAnswerC();
     String getAnswerD();
+    String getAnswer(int nr);
 }

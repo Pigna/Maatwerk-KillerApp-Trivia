@@ -1,9 +1,6 @@
 package QuizServer;
 
-import Shared.IPlayer;
-import Shared.IQuestion;
-import Shared.IQuiz;
-import Shared.IQuizManager;
+import Shared.*;
 import fontyspublisher.IRemotePublisherForDomain;
 
 import java.rmi.RemoteException;
@@ -18,6 +15,7 @@ public class QuizManager extends UnicastRemoteObject implements IQuizManager
 {
     List<IQuiz> quizzes;
     IRemotePublisherForDomain remotePublisherForDomain;
+    int counter = 0;
 
     public QuizManager(IRemotePublisherForDomain remotePublisherForDomain) throws RemoteException
     {
@@ -30,7 +28,8 @@ public class QuizManager extends UnicastRemoteObject implements IQuizManager
     public IQuiz NewQuiz()
     {
         //TODO: Generate UUID
-        String code = "quiz";
+        String code = "quiz" + counter;
+        counter++;
         try
         {
             IQuiz newQuiz = new Quiz(code);
@@ -61,7 +60,7 @@ public class QuizManager extends UnicastRemoteObject implements IQuizManager
         }
         if (quiz != null)
         {
-            quiz.addQuestion(question);
+            quiz.AddQuestion(question);
             try
             {
                 // Inform player with the new question
@@ -88,14 +87,10 @@ public class QuizManager extends UnicastRemoteObject implements IQuizManager
     }
 
     @Override
-    public void PlayerAnswerQuestion(String quizCode, IQuestion question, IPlayer player, Integer answerID) throws RemoteException
+    public void PlayerAnswerQuestion(String quizCode, IQuestion question, IPlayer player, int answerID) throws RemoteException
     {
-        // TODO: finish this off, then done!
-        // TODO: Afterwards maybe score screen?
-    }
-
-    public void NewPlayer(String quizCode, String playerName)
-    {
-
+        IQuiz q = GetQuiz(quizCode);
+        IQuestionAnswer qa = new QuestionAnswer(question, answerID);
+        q.AddPlayerAnswer(player, qa);
     }
 }

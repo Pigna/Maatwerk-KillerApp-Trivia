@@ -1,6 +1,8 @@
 package QuizServer;
 
+import Shared.IPlayer;
 import Shared.IQuestion;
+import Shared.IQuestionAnswer;
 import Shared.IQuiz;
 
 import java.util.ArrayList;
@@ -12,11 +14,12 @@ public class Quiz implements IQuiz
 {
     String quizCode;
     ArrayList<IQuestion> questions;
+    ArrayList<IPlayer> players;
 
     protected Quiz(String quizCode)
     {
         this.quizCode = quizCode;
-        //players = new ArrayList<>();
+        players = new ArrayList<>();
         this.questions = new ArrayList<>();
     }
 
@@ -25,24 +28,23 @@ public class Quiz implements IQuiz
     {
         return quizCode;
     }
-//    @Override
-//    public ArrayList<Player> getPlayers()
-//    {
-//        return players;
-//    }
-//
-//    @Override
-//    public Player getPlayer(String name)
-//    {
-//        for (Player p : players)
-//        {
-//            if (p.getName().equals(name))
-//            {
-//                return p;
-//            }
-//        }
-//        return null;
-//    }
+
+    public ArrayList<IPlayer> getPlayers()
+    {
+        return players;
+    }
+
+    private IPlayer getPlayer(String name)
+    {
+        for (IPlayer p : players)
+        {
+            if (p.getName().equals(name))
+            {
+                return p;
+            }
+        }
+        return null;
+    }
 
     @Override
     public ArrayList<IQuestion> getQuestions()
@@ -51,8 +53,24 @@ public class Quiz implements IQuiz
     }
 
     @Override
-    public void addQuestion(IQuestion question)
+    public void AddQuestion(IQuestion question)
     {
         questions.add(question);
+    }
+
+    @Override
+    public void AddPlayerAnswer(IPlayer player, IQuestionAnswer questionAnswer)
+    {
+        IPlayer p = getPlayer(player.getName());
+        if (p == null)
+        {
+            player.AddQuestionAnswer(questionAnswer);
+            players.add(player);
+        }
+        else
+        {
+            p.AddQuestionAnswer(questionAnswer);
+        }
+
     }
 }

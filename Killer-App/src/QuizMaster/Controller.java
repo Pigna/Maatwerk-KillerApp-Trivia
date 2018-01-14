@@ -1,21 +1,18 @@
 package QuizMaster;
 
 import QuizServer.Question;
-import Shared.IQuestion;
-import Shared.IQuiz;
-import Shared.IQuizManager;
+import Shared.*;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 
 import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller extends Main implements Initializable
@@ -41,6 +38,9 @@ public class Controller extends Main implements Initializable
 
     @FXML
     Label lblRoomCode;
+
+    @FXML
+    TreeView tvPlayerAnswers;
     //RMI stuff
     private static final String bindingNameQM = "gameManager";
     private Registry registry = null;
@@ -142,7 +142,7 @@ public class Controller extends Main implements Initializable
             try
             {
                 IQuestion q = new Question(question, answerA, answerB, answerC, answerD);
-                quiz.addQuestion(q);
+                quiz.AddQuestion(q);
                 quizManager.NewQuestion(quiz.getQuizCode(), q);
                 ClearTextAreas();
             }
@@ -160,9 +160,35 @@ public class Controller extends Main implements Initializable
         taAnswerQuestionC.setText("");
         taAnswerQuestionD.setText("");
     }
-    public void GetAnswers()
+    @FXML
+    public void RefreshScore(Event event)
     {
-
+        try
+        {
+            quiz = quizManager.GetQuiz(quiz.getQuizCode());
+        }
+        catch (RemoteException e)
+        {
+            System.out.println("Master: Get score, get quiz remote exception.");
+        }
+        TreeItem root = new TreeItem(quiz.getQuizCode());
+        ArrayList<TreeItem> treeitemsPlayer = new ArrayList<>();
+        for (IPlayer p : quiz.getPlayers())
+        {
+            TreeItem treeItemPlayer = new TreeItem(p.getName());
+            ArrayList<TreeItem> treeitemQuestionAnswer = new ArrayList<>();
+            for(IQuestionAnswer qa : p.getAllAnswers())
+            {
+                TreeItem treeItemQuestion = new TreeItem(qa.getQuestion().getQuestion());
+                TreeItem treeItemAnswer = new TreeItem(qa.getQuestion().getAnswer(qa.getAnswer()));
+                treeItemQuestion.getChildren().add(treeItemAnswer);
+                treeitemQuestionAnswer.add(treeItemQuestion);
+            }
+            treeItemPlayer.getChildren().addAll(treeitemQuestionAnswer);
+            treeitemsPlayer.add(treeItemPlayer);
+        }
+        root.getChildren().addAll(treeitemsPlayer);
+        tvPlayerAnswers.setRoot(root);
     }
     private void SetRoomCode(String roomCode)
     {
