@@ -16,7 +16,7 @@ public class Quiz implements IQuiz
     ArrayList<IQuestion> questions;
     ArrayList<IPlayer> players;
 
-    protected Quiz(String quizCode)
+    public Quiz(String quizCode)
     {
         this.quizCode = quizCode;
         players = new ArrayList<>();
@@ -29,6 +29,7 @@ public class Quiz implements IQuiz
         return quizCode;
     }
 
+    @Override
     public ArrayList<IPlayer> getPlayers()
     {
         return players;
